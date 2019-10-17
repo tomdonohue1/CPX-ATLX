@@ -1,0 +1,34 @@
+//Box 4 - Lift and Spin
+//---------------------------------
+
+//Hardware
+
+Limit Switches
+-Arm Up
+-Arm Down
+
+Motor Control
+-Left Motor - Drive Motor
+-Right Motor - Lift Motor
+
+
+//Power
+5V:
+-Arduino
+
+5V Pullup:
+-2x Limit Switches
+
+12V:
+-Motor Control Circuit
+
+//Arduino I/O
+Drive Motor:
+Ena - D9
+In1 - D6
+In2 - D5
+
+Lift Motor
+Ena - D10
+In1 - D3
+In2 - D2

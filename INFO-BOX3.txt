@@ -1,0 +1,54 @@
+//Box 2 - Temperature Control and Circulation
+//---------------------------------
+
+//Hardware
+
+Relays:
+-1x Air Motor
+-1x Rinse Solenoid
+
+Flow Sensors
+-Fluid into Drum
+-Fluid Out of Drum
+
+Limit Switches
+-Pneumatic Roller on Channel 0
+-Chemical Reclamation at 0 point
+
+Stepper Motor Controls
+-Pneumatic Roller
+-Chemical Reclamation
+
+
+//Power
+5V:
+-Arduino
+-Fill Sensors
+
+5V Pullup:
+-2x Limit Switches
+
+24V:
+-Pneumatic Roller
+-Chem Reclamation
+-Rinse solenoid
+
+
+//Arduino I/O
+Flow In - D12
+Flow Out - D11
+
+Pneumatic Roller Control
+en - D10
+Dir - D9
+Pul - D8
+Limit - D4
+
+Chemical Reclamation Control
+en - D7
+Dir - D6
+Pul - D5
+Limit - D3
+
+Air Relay - D2
+Wash Relay - D13

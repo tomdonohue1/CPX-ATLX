@@ -1,0 +1,36 @@
+//Box 1 - Fill and Drain
+//---------------------------------
+
+//Hardware
+
+Relays:
+-1x In Pump
+-1x Waste Pump
+
+Fill Sensors
+-Bucket Empty/Air in Hose
+-Overfilled Bath
+-Waste Water Full
+-Waste Water Empty
+
+//Power
+5V:
+-Arduino
+-Fill Sensors
+
+12V:
+-Waste Pump
+
+120VAC:
+-In Pump
+
+//Arduino I/O
+-inPump = 5;
+-drainPump = 4;
+-outPlug = 6;
+-waste Full = 10
+-wasteEmpty = 9;
+-BathOverflow = 8;
+-inBathFlow = 7;
+-fillDone = 11;
+-drainDone = 12;

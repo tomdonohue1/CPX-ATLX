@@ -1,0 +1,39 @@
+//Box 2 - Temperature Control and Circulation
+//---------------------------------
+
+//Hardware
+
+Relays:
+-1x Circulation Pump
+-1x Heater
+
+Fill Sensors
+-Water above Pump
+
+Temperature Sensors
+-3x Line 1 for Bath Temp
+-3x Chem Bottle 1
+-2x Chem Bottle 2
+(both chem bottles same channel)
+
+
+//Power
+5V:
+-Arduino
+-Fill Sensors
+
+5V Pullup:
+-2x Temp sensor channels
+
+120VAC:
+-Circ Pump
+-Heating Element
+
+//Arduino I/O
+D3 - waste pump
+D4 - heater
+D5 - fill sensor full
+D6 - fill sensor empty
+D7 - temps bath
+d5 - Bath Thermometers
+d6 - Chem Thermometers
