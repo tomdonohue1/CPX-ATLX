@@ -13,6 +13,8 @@ bool processConfirm = false;
 //I/O Declaration
 int box1Ready = 11;
 int box2Ready = 12;
+int PneuReady = 13;
+int RecRedy = 14;
 
 void setup() {
 Serial.begin(9600);
@@ -123,14 +125,26 @@ Wire.write(1); //1 is the switch case for filling
 Wire.endTransmission();
 //While filling starts, send the target temp to Box 2
 Wire.beginTransmission(2);
-Wire.write(38); //38°C to box 2
+Wire.write(38.0); //38°C to box 2
 Wire.endTransmission();
 
+Wire.beginTransmission(3);
+Wire.write("f"+ fluidVolume);
+Wire.endTransmission();
+//Set the input Channel on the Pneumatic Roller while we're waiting
+Wire.beginTransmission(3);
+Wire.write("p1");
+Wire.endTransmission();
+
+Wire.beginTransmission(3);
+Wire.write("r0");
+Wire.endTransmission();
 //wait for both the bath to fill and for everything to come to Temperature
-while(digitalRead(box1Ready)==LOW && digitalRead(box2Ready)==LOW){
+while(digitalRead(box1Ready)==LOW && digitalRead(box2Ready)==LOW && digitalRead(PneuReady) == LOW){
   delay(10000); //wait 10 seconds at a time
 }
-//Bath is Filled, we can start with the Developer
+//Bath is Filled, we can start with the inital Rinse
+
 
 
 
@@ -142,9 +156,9 @@ while(digitalRead(box1Ready)==LOW && digitalRead(box2Ready)==LOW){
 }
 
 void E6(){
-  
+
 }
 
 void BandW(){
-  
+
 }
