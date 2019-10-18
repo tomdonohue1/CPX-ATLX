@@ -1,4 +1,4 @@
-//Box 2 - Temperature Control and Circulation
+//Box 3 - Pump and Dump
 //---------------------------------
 
 //Hardware

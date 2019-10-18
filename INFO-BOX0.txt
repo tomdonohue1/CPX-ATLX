@@ -1,0 +1,17 @@
+//Box 1 - Fill and Drain
+//---------------------------------
+
+//Hardware
+
+
+
+//Power
+USB:
+Direct to computer
+
+5V:
+-Arduino
+
+//Arduino I/O
+-Box 1 Ready = 11;
+-Box 2 Ready = 12;

@@ -34,3 +34,7 @@ Fill Sensors
 -inBathFlow = 7;
 -fillDone = 11;
 -drainDone = 12;
+
+Switch Cases
+1: Fill then Monitor the waste Bucket
+3: Drain the Bath
