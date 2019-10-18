@@ -1,0 +1,34 @@
+//Box 5 - FLOW
+//---------------------------------
+
+//Hardware
+
+Relays:
+-1x Air Motor
+-1x Rinse Solenoid
+
+Flow Sensors
+-Fluid into Drum
+-Fluid Out of Drum
+
+
+//Power
+5V:
+-Arduino
+-Fill Sensors
+
+5V Pullup:
+-2x Limit Switches
+
+24V:
+-Rinse solenoid
+-Air Pump solenoid
+
+
+//Arduino I/O
+Flow In - D7
+Flow Out - D8
+
+
+Air Relay - D4
+Wash Relay - D5

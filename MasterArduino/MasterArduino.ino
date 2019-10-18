@@ -13,8 +13,16 @@ bool processConfirm = false;
 //I/O Declaration
 int box1Ready = 11;
 int box2Ready = 12;
-int PneuReady = 13;
-int RecRedy = 14;
+int box3Ready = 13;
+int box4Ready = 14;
+int box5Ready = 15;
+
+//OUTPUT
+int recGo = 20; //Toggle to rinse/pneum channel Box 3
+//High - Reclamation Channel, Low - Pneum Channel
+int washGo = 21; //Toggle fluid/rinse channel Box 5
+//High - Rinse flow, Low - Fluid flow
+
 
 void setup() {
 Serial.begin(9600);
@@ -95,7 +103,7 @@ while(!processConfirm){
 //No varaiation assumed - Fresh chems all the Time
 void C41(){
   processConfirm = false;
-  confirm = "n";
+  confirm = 'n';
   Serial.println("C-41 Color Negative Process");
 
   //Get Fluid Volume and Confirm
@@ -110,7 +118,7 @@ void C41(){
     if(Serial.available()>0){
       confirm = Serial.read();
     }
-    if(confirm!="y"){
+    if(confirm!='y'){
       Serial.println("retry");
     }
     else{
@@ -128,23 +136,29 @@ Wire.beginTransmission(2);
 Wire.write(38.0); //38°C to box 2
 Wire.endTransmission();
 
-Wire.beginTransmission(3);
-Wire.write("f"+ fluidVolume);
+Wire.beginTransmission(5);
+Wire.write(fluidVolume);
 Wire.endTransmission();
 //Set the input Channel on the Pneumatic Roller while we're waiting
 Wire.beginTransmission(3);
-Wire.write("p1");
+Wire.write(1);
 Wire.endTransmission();
-
+//Set the input Channel on the Reclamation
+digitalWrite(recGo,HIGH);
 Wire.beginTransmission(3);
 Wire.write("r0");
 Wire.endTransmission();
+delay(100); //let box 3 hear the high Channel
+digitalWrite(recGo,LOW); //turn this off if we aren't using it
 //wait for both the bath to fill and for everything to come to Temperature
 while(digitalRead(box1Ready)==LOW && digitalRead(box2Ready)==LOW && digitalRead(PneuReady) == LOW){
   delay(10000); //wait 10 seconds at a time
 }
 //Bath is Filled, we can start with the inital Rinse
-
+digitalWrite(washGo, HIGH); //high for washGo
+while(digitalRead(box5Ready)==LOW){
+  delay(100);
+}
 
 
 

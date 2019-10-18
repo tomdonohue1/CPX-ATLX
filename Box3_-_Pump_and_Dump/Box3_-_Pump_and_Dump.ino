@@ -1,18 +1,15 @@
 
 #include<Wire.h>
-#define FLOW2SEC .1 //milliliters/second
-#define MASTEROK A1
+#define MASTEROK 13
 
-str inputVar = String(4);
-char subSystem = 'x';
-int subChannel = 0;
+int inputVar = 0;
 
 //Pneumatic Declaration
 int PULp=8; //define Pulse pin
 int DIRp=9; //define Direction pin
 int ENAp=10; //define Enable Pin
 
-int hallp = 4; //input
+int hallp = 11; //input
 int stsp = 0; //limit switch status
 
 //Reclamation Declaration
@@ -22,62 +19,37 @@ int ENAr=7; //define Enable Pin
 
 int hallr = 4; //input
 int stsr = 0; //limit switch status
+int recGo = 3; //if HIGH, set Rec Channel - if LOW, set Pneum Channel
+int recGoSts = 0;
 //Other Declaration
-int washRelay = 13;
-int airRelay = 2;
-
-int flowIn = 12;
-int flowOut = 11;
-
-int fluidVolume = 0;
-float fluidTime = 0; //seconds
-
 
 void setup() {
   Serial.begin(9600);
   Wire.begin(3); // I2C assignment
   Wire.onReceive(receiveEvent);
 
-  //Pin Modes
 
+//PinModes
 
 }
 
 void receiveEvent () //Master has told this unit to do something
 {
+  digitalWrite(MASTEROK,LOW);//Reset the OK switch
 inputVar = Wire.read();
-subSystem = inputVar[0];
+recGoSts = digitalRead(recGo);
 
-
-  switch (subSystem) {
-    case 'f':
-      fluidVolume = inputVar.substring(1,3);
-      fluidTime = fluidVolume*FLOW2SEC*1000; //converts to miliseconds
-    break;
-    case 'p':
-    subChannel = inputVar[1];
+if(recGoSts == LOW){}
     zeroRoller();
     PneuChannelSet(subChannel);
-    break;
-
-    case 'r':
+    digitalWrite(MASTEROK,HIGH);
+  }
+else{
+  //xxx Code for Rec. Channel Function Goes here
+  digitalWrite(MASTEROK,HIGH);
+}
     subChannel = inputVar[1];
     //SubFuctions to be done
-    break;
-
-    case 'w': //rinse water
-    //Turn on the rinse solenoid
-    digitalWrite(washRelay, HIGH);
-    while(digitalRead(flowIn) == LOW){
-      delay(50);
-    }
-    //fluid is now flowing into the JOBO
-    //Tell the Master to Start Spinning the wheel
-    digitalWrite(MasterOK, HIGH);
-    delay(fluidTime); //wait the required amount of time for proper fluid flowIn
-
-    digitalWrite(washRelay, LOW);
-    break;
   }
 
 }
