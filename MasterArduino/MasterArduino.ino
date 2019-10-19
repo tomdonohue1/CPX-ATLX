@@ -18,10 +18,6 @@ int box4Ready = 14;
 int box5Ready = 15;
 
 //OUTPUT
-int recGo = 20; //Toggle to rinse/pneum channel Box 3
-//High - Reclamation Channel, Low - Pneum Channel
-
-
 
 void setup() {
 Serial.begin(9600);
@@ -224,7 +220,7 @@ void Rinse(int rinseTime){
   SendCommand(5,1);//Fill Jobo with Water
   Wait4Box(box5Ready);
   //Fluid is now in JOBO, run the timer
-  delay(rinseTime); //60 second rinse
+  delay(rinseTime);
   //Times up! Dump Rinse Water
   SendCommand(4,2);
   Wait4Box(box4Ready);
