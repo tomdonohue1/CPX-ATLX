@@ -52,3 +52,5 @@ Limit - D3
 
 Air Relay - D2
 Wash Relay - D13
+
+MasterOK- A1

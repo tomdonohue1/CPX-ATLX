@@ -30,12 +30,16 @@ void setup() {
   Serial.begin(9600);
   Wire.begin(2); // I2C assignment
   Wire.onReceive(receiveEvent);
+
+  //Pin Declaration
+  pinMode(MASTEROK, OUTPUT);
 }
 
 void receiveEvent () //Master has told this unit to do something
 {
+  digitalWrite(MASTEROK,LOW);
  inputVar = Wire.read(); // get target temp
- inputVar = (float)inputVar; // convert to a float for exact control
+ inputVar = inputVar/10.0; // convert to a float for exact control
  //Wait for the bath to fill, then start the circ. pump
  while(digitalRead(fillReady) == false){
   delay(1000);

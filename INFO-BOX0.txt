@@ -15,3 +15,5 @@ Direct to computer
 //Arduino I/O
 -Box 1 Ready = 11;
 -Box 2 Ready = 12;
+-Box 3 PneuReady = 13;
+-Box 3 RecReady = 14;

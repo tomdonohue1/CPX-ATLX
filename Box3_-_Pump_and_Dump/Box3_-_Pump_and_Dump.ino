@@ -19,8 +19,7 @@ int ENAr=7; //define Enable Pin
 
 int hallr = 4; //input
 int stsr = 0; //limit switch status
-int recGo = 3; //if HIGH, set Rec Channel - if LOW, set Pneum Channel
-int recGoSts = 0;
+
 //Other Declaration
 
 void setup() {
@@ -28,73 +27,70 @@ void setup() {
   Wire.begin(3); // I2C assignment
   Wire.onReceive(receiveEvent);
 
-
 //PinModes
+pinMode(MASTEROK, OUTPUT);
+pinMode(PULp,OUTPUT);
+pinMode(DIRp,OUTPUT);
+pinMode(ENAp,OUTPUT);
+pinMode(hallp,OUTPUT);
 
+pinMode(PULr,OUTPUT);
+pinMode(DIRr,OUTPUT);
+pinMode(ENAr,OUTPUT);
+pinMode(hallr,OUTPUT);
 }
 
 void receiveEvent () //Master has told this unit to do something
 {
   digitalWrite(MASTEROK,LOW);//Reset the OK switch
-inputVar = Wire.read();
-recGoSts = digitalRead(recGo);
+  int channelTarget = 0; //reset target channel
+  inputVar = Wire.read();
 
-if(recGoSts == LOW){}
+  if(inputVar>10 && inputVar<20){ //Pnumatic Channel Set
+    channelTarget = channelTarget-10; //use only the last digit
     zeroRoller();
-    PneuChannelSet(subChannel);
+    PneuChannelSet(channelTarget);
     digitalWrite(MASTEROK,HIGH);
   }
-else{
+  else if(inputVar>=20 && inputVar <30){ //Reclamation Channel Set
+    channelTarget = channelTarget-20; //use only the last digit
   //xxx Code for Rec. Channel Function Goes here
   digitalWrite(MASTEROK,HIGH);
-}
-    subChannel = inputVar[1];
-    //SubFuctions to be done
   }
-
 }
-
-
 
 void loop() {
 delay(100);
-
 }
-
 
 void zeroRoller(){
 int zeroSteps = 0; //to be used counting steps of the magnet
 int backSteps = 0; //to be used centering the magnet
   //First, make sure it's not on channel Zero
 sts = digitalRead(hall); //LOW = MAGNET
-  if(sts == LOW){
-    Serial.println("In ON-MAGNET While Loop");
-    while (sts == LOW){
+  if(stsp == LOW){
+    while (stsp == LOW){
       forward();
-      sts = digitalRead(hall);
+      stsp = digitalRead(hallp);
     }
   }
-  sts = digitalRead(hall); // Current State
+  stsp = digitalRead(hallp); // Current State
   //Advance Forward until we hit the magnet again
-  Serial.println("In First While Loop");
-  while (sts == HIGH){
+  while (stsp == HIGH){
     forward();
-    sts = digitalRead(hall);
+    stsp = digitalRead(hallp);
 
   }
-  delay(500);
-Serial.println("In Second While Loop");
+  delay(100);
   //Now, count the steps until we're past the magnet
-  while (sts == LOW){
+  while (stsp == LOW){
     forward();
     zeroSteps ++;
-    sts = digitalRead(hall);
+    stsp = digitalRead(hallp);
   }
-
   //Divide the number in half to center the motor
   backSteps = zeroSteps/2;
   //back up to Zero Position
-
   for (int i = 0; i<backSteps; i++){
     backward();
   }

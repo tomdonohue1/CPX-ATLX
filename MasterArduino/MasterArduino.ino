@@ -20,8 +20,7 @@ int box5Ready = 15;
 //OUTPUT
 int recGo = 20; //Toggle to rinse/pneum channel Box 3
 //High - Reclamation Channel, Low - Pneum Channel
-int washGo = 21; //Toggle fluid/rinse channel Box 5
-//High - Rinse flow, Low - Fluid flow
+
 
 
 void setup() {
@@ -31,6 +30,10 @@ Wire.begin();
 //I/O setup
  //Box 1 ready
  pinMode(box1Ready, INPUT);
+ pinMode(box2Ready, INPUT);
+ pinMode(box3Ready, INPUT);
+ pinMode(box4Ready, INPUT);
+ pinMode(box5Ready, INPUT);
 
 }
 
@@ -38,23 +41,27 @@ void loop() {
   // put your main code here, to run repeatedly:
 //Welcom Message
 Serial.println("---------------------------");
-Serial.println("Welcome to the JOBO ATL-X");
+Serial.println("Welcome to the JERB-O ATL-X");
 Serial.println("---------------------------");
 
 Serial.println("Select Process Type");
-Serial.println("Press C for C41");
-Serial.println("Press E for E6");
-Serial.println("Press B for B&W");
-
-while(!processConfirm){
-  if(Serial.available()>0){
+Serial.println("Press c for C41");
+Serial.println("Press e for E6");
+Serial.println("Press b for B&W");
+while(Serial.available() == 0){ }
+if(Serial.available()>0){
     ProcessType = Serial.read();
+  }
+while(!processConfirm){
     Serial.println("Confirm Process:");
+
     switch (ProcessType) {
       case 'C':
       Serial.println("C-41 - Press y to confirm");
+      while(Serial.available() == 0){ }
       if(Serial.available()>0){
         confirm = Serial.read();
+        Serial.println(confirm);
       }
       if(confirm!='y'){
         Serial.println("Resetting...");
@@ -67,6 +74,7 @@ while(!processConfirm){
 
       case 'E':
       Serial.println("E-6 - Press y to confirm");
+      while(Serial.available() == 0){ }
       if(Serial.available()>0){
         confirm = Serial.read();
       }
@@ -81,10 +89,11 @@ while(!processConfirm){
 
       case 'B':
       Serial.println("Black and White - Press y to confirm");
+      while(Serial.available() == 0){ }
       if(Serial.available()>0){
         confirm = Serial.read();
       }
-      if(confirm!="y"){
+      if(confirm!='y'){
         Serial.println("Resetting...");
       }
       else{
@@ -95,13 +104,18 @@ while(!processConfirm){
     }
   }
 }
-}
+
 //------------------------------------------------------------------
 //----Process Functions---------------------------------------------
 
 //C-41 Color Negative
 //No varaiation assumed - Fresh chems all the Time
 void C41(){
+
+  long timeDev = 3.25*60*1000L; //3:15 to seconds
+  long timeBle = 6.5*60*1000L; //6:30 to Seconds
+  long timeFix = 6.5*60*1000L; //6:30 to Seconds
+
   processConfirm = false;
   confirm = 'n';
   Serial.println("C-41 Color Negative Process");
@@ -109,12 +123,14 @@ void C41(){
   //Get Fluid Volume and Confirm
   while(!processConfirm){
     Serial.println("Enter Fluid Volume");
+    while(Serial.available() == 0){ }
     if(Serial.available()>0){
-      fluidVolume = Serial.read();
+      fluidVolume = Serial.parseInt();
     }
-    Serial.print("Confirm Fluid Volume:");
+    Serial.print("Confirm Fluid Volume: ");
     Serial.print(fluidVolume);
-    Serial.print("ml");
+    Serial.print(" ml");
+    while(Serial.available() == 0){ }
     if(Serial.available()>0){
       confirm = Serial.read();
     }
@@ -128,51 +144,112 @@ void C41(){
 
 //C-41 is Temperature Controlled. Bath will be needed.
 //Fill The BathOverflow
-Wire.beginTransmission(1);
-Wire.write(1); //1 is the switch case for filling
-Wire.endTransmission();
-//While filling starts, send the target temp to Box 2
-Wire.beginTransmission(2);
-Wire.write(38.0); //38°C to box 2
-Wire.endTransmission();
+Serial.println("Fill Command Sent");
+SendCommand(1,1);
 
-Wire.beginTransmission(5);
-Wire.write(fluidVolume);
-Wire.endTransmission();
+//While filling starts, send the target temp to Box 2
+Serial.println("Target Temp Sent to Controller");
+SendCommand(2,380); //Temperature is sent as Temp*10 so that a decimal can be used while still only sending an int data type.
+//Tell the Flow box how much water to used
+Serial.println("Fluid Volume Sent to Controller");
+SendCommand(5,fluidVolume);
 //Set the input Channel on the Pneumatic Roller while we're waiting
-Wire.beginTransmission(3);
-Wire.write(1);
-Wire.endTransmission();
+
 //Set the input Channel on the Reclamation
-digitalWrite(recGo,HIGH);
-Wire.beginTransmission(3);
-Wire.write("r0");
-Wire.endTransmission();
-delay(100); //let box 3 hear the high Channel
-digitalWrite(recGo,LOW); //turn this off if we aren't using it
+Serial.println("Set Reclamation Channel W");
+SendCommand(3,10);
+//Don't need to wait for the box because heating will take longer
 //wait for both the bath to fill and for everything to come to Temperature
-while(digitalRead(box1Ready)==LOW && digitalRead(box2Ready)==LOW && digitalRead(PneuReady) == LOW){
-  delay(10000); //wait 10 seconds at a time
+Serial.println("Bath Heating, Please Wait....");
+Serial.print("Box 1 Status: ");
+Serial.println(digitalRead(box1Ready)==LOW);
+Serial.print("Box 2 Status: ");
+Serial.println(digitalRead(box2Ready)==LOW);
+Serial.print("Box 5 Status: ");
+Serial.println(digitalRead(box5Ready)==LOW);
+while(digitalRead(box1Ready)==LOW && digitalRead(box2Ready)==LOW && digitalRead(box5Ready) == LOW){
+  delay(5000);
+  Serial.print("."); //wait 5 seconds at a time
 }
 //Bath is Filled, we can start with the inital Rinse
-digitalWrite(washGo, HIGH); //high for washGo
-while(digitalRead(box5Ready)==LOW){
-  delay(100);
-}
+Serial.println("Heating Complete! Begining Initial Rinse");
+//Start Spinning
+SendCommand(4,1);
+//rinse
+Rinse(30);
+//Step One - Developer
+Serial.println("Begin Chemical 1");
+ProcessChem(1,timeDev);
+//Chems Dumped, Rinse Thrice
+Serial.println("Chemical Complete, in rinse cycle");
+Rinse(30);
+Rinse(30);
+Rinse(30);
+//Step Two - Bleach
+Serial.println("Begin Chemical 2");
+ProcessChem(2,timeBle);
+//Chems Dumped, Rinse Thrice
+Serial.println("Chemical Complete, in rinse cycle");
+Rinse(30);
+Rinse(30);
+Rinse(30);
+//Step 3 - Fix
+Serial.println("Begin Chemical 3");
+ProcessChem(3,timeFix);
+//Chems Dumped, Rinse Thrice
+Serial.println("Chemical Complete, in rinse cycle");
+Rinse(30);
+Rinse(30);
+Rinse(30);
 
-
-
-
-
-
+Serial.println("Process Complete!");
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   //END C-41
 }
 
-void E6(){
+void SendCommand(int Box, int Command){
+  Wire.beginTransmission(Box);
+  Wire.write(Command);
+  Wire.endTransmission();
+}
 
+void Wait4Box(int Box){
+  while(digitalRead(Box)==LOW){
+    delay(50);
+  }
+}
+void Rinse(int rinseTime){
+  //parses an int for total rinse timer
+  rinseTime = rinseTime*1000; //convert Seconds to Milliseconds
+  SendCommand(5,1);//Fill Jobo with Water
+  Wait4Box(box5Ready);
+  //Fluid is now in JOBO, run the timer
+  delay(rinseTime); //60 second rinse
+  //Times up! Dump Rinse Water
+  SendCommand(4,2);
+  Wait4Box(box4Ready);
+}
+
+void ProcessChem(int channel,int time){
+  //time input in ms
+  //Start by setting the PneumaticRoller
+  SendCommand(3,channel+10);//+10 for Pnumatic Roller
+  Wait4Box(box3Ready);
+  //Set the Reclamation channel
+
+  SendCommand(3,channel+20);//+20 for Reclamation
+    //Waiting not needed as this will take less than process times
+
+  SendCommand(5,2);//Tell fluid to flowIn
+  Wait4Box(box5Ready); //fluid is now fully in Jobo
+  delay(time);
+  SendCommand(4,2);//dump chemicals
+  Wait4Box(box4Ready);
+}
+void E6(){
+Serial.println("E-6 not currently supported");
 }
 
 void BandW(){
-
+Serial.println("Black and White not currently supported");
 }

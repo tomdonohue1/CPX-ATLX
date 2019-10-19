@@ -5,6 +5,7 @@
 //drainage, and final Drain.
 //-------------------------------------------------------------------------
 #include<Wire.h>
+#define MASTEROK 13
 int inputVar = 0;
 //Global Variables
 
@@ -38,12 +39,12 @@ void setup() {
   pinMode(bathOverflow,INPUT);
   pinMode(inBathFlow,INPUT);
 
-  pinMode(fillDone,OUTPUT);
-  pinMode(drainDone,OUTPUT);
+  pinMode(MASTEROK,OUTPUT);
 }
 
 void receiveEvent () //Master has told this unit to do something
 {
+  digitalWrite(MASTEROK,LOW);
  inputVar = Wire.read();
 
         switch(inputVar){
