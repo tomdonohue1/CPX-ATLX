@@ -6,11 +6,9 @@
 int inputVar = 0;
 
 //IO Declaration
-int washGo = 4;
-int airGo = 5;
 
-int washRelay = 7;
-int airRelay = 8;
+int washRelay = 4;
+int airRelay = 3;
 
 int flowIn = 10;
 
@@ -63,12 +61,12 @@ if(inputVar>2){ //the fluid volume has been sent
     digitalWrite(airRelay,LOW);
     //signalReady
     digitalWrite(MASTEROK,HIGH);
-    break
+    break;
     default:
 
     break;
   }
-
+}
 
 void loop() {
 delay(100);

@@ -68,7 +68,7 @@ void receiveEvent () //Master has told this unit to do something
     //flow is done
     delay(5000); //delay +5 seconds just to be sure
     downward();
-    digitalWrite(MASTEROK,HIGH)
+    digitalWrite(MASTEROK,HIGH);
     spin();//assuming that the receive event will reset spin
     break;
   }
@@ -77,41 +77,40 @@ void receiveEvent () //Master has told this unit to do something
 //Lift Motor functions
 //------------------------------------------------------------------
 void upward(){
-  if(digitalRead(upLift)==HIGH){
-    upVal = digitalRead(upLift); //Read Pin
+  
+  if(digitalRead(upLimit)==HIGH){
+    upVal = digitalRead(upLimit); //Read Pin
     digitalWrite(in1_L,HIGH);
     digitalWrite(in2_L,LOW);
     analogWrite(enA_L, xSpeed);
     while((upVal == HIGH)){
       delay(50);
-      upVal = digitalRead(upLift); //Read Pin
+      upVal = digitalRead(upLimit); //Read Pin
   }
   }
   else{
-    Serial.println("already up");
   }
   pause();
 }
 
 void pause(){
-  digitalWrite(in1,LOW);
-  digitalWrite(in2,LOW);
+  digitalWrite(in1_L,LOW);
+  digitalWrite(in2_L,LOW);
 }
 
 void downward(){
   Serial.println("Going Down");
-  if(digitalRead(dwLift)==HIGH){
-    dwVal = digitalRead(dwLift); //Read Pin
-    digitalWrite(in1,LOW);
-    digitalWrite(in2,HIGH);
-    analogWrite(enA, xSpeed);
+  if(digitalRead(dwLimit)==HIGH){
+    dwVal = digitalRead(dwLimit); //Read Pin
+    digitalWrite(in1_L,LOW);
+    digitalWrite(in2_L,HIGH);
+    analogWrite(enA_L, xSpeed);
     while((dwVal == HIGH)){
       delay(50);
-      dwVal = digitalRead(dwLift); //Read Pin
+      dwVal = digitalRead(dwLimit); //Read Pin
   }
   }
   else{
-    Serial.println("already down");
   }
   pause();
 }
@@ -123,14 +122,13 @@ while(true){
 digitalWrite(in1_S,HIGH);
 digitalWrite(in2_S,LOW);
 analogWrite(enA_S, xSpeed_S);
-heatOnOff();
 delay(3000);
 //Slow Down
 decel();
 //Switch Direction
 digitalWrite(in1_S,LOW);
 digitalWrite(in2_S,HIGH);
-analogWrite(enA_S,xSpeed);
+analogWrite(enA_S,xSpeed_S);
 delay(3000);
 //Slow Down
 decelRev();

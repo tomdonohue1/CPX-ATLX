@@ -8,6 +8,7 @@
 #include<Wire.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#define MASTEROK 13
 int inputVar = 0; //goal Temp
 //Global Variables
 int circPump = 3;
