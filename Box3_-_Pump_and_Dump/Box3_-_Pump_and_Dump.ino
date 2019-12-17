@@ -63,28 +63,46 @@ void loop() {
 delay(100);
 }
 
+
+void forward_P(){
+    digitalWrite(DIRp,LOW);
+    digitalWrite(ENAp,HIGH);
+    digitalWrite(PULp,HIGH);
+    delayMicroseconds(5);
+    digitalWrite(PULp,LOW);
+    delayMicroseconds(5);
+}
+
+void backward_P(){
+    digitalWrite(DIRp,HIGH);
+    digitalWrite(ENAp,HIGH);
+    digitalWrite(PULp,HIGH);
+    delayMicroseconds(5);
+    digitalWrite(PULp,LOW);
+    delayMicroseconds(5);
+}
+
 void zeroRoller(){
 int zeroSteps = 0; //to be used counting steps of the magnet
 int backSteps = 0; //to be used centering the magnet
   //First, make sure it's not on channel Zero
-sts = digitalRead(hall); //LOW = MAGNET
+stsp = digitalRead(hallp); //LOW = MAGNET
   if(stsp == LOW){
     while (stsp == LOW){
-      forward();
+      forward_P();
       stsp = digitalRead(hallp);
     }
   }
   stsp = digitalRead(hallp); // Current State
   //Advance Forward until we hit the magnet again
   while (stsp == HIGH){
-    forward();
+    forward_P();
     stsp = digitalRead(hallp);
-
   }
   delay(100);
   //Now, count the steps until we're past the magnet
   while (stsp == LOW){
-    forward();
+    forward_P();
     zeroSteps ++;
     stsp = digitalRead(hallp);
   }
@@ -92,13 +110,13 @@ sts = digitalRead(hall); //LOW = MAGNET
   backSteps = zeroSteps/2;
   //back up to Zero Position
   for (int i = 0; i<backSteps; i++){
-    backward();
+    backward_P();
   }
 }
 
 void PneuChannelSet(long channel){
   long numSets = 80000*channel;
   for(long i = 0; i<numSets; i++)
-  forward();
+  forward_P();
   Serial.println("Channel Set");
 }
