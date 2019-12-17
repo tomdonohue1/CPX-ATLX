@@ -1,0 +1,27 @@
+//Master I/O & Power Info
+//---------------------------------
+
+
+//By Voltage
+
+5V
+-Arduinos
+-Fill sensors
+-Flow sensors
+-Limit Switches*
+-Temperature Sensors*
+
+12V
+-Waste pump
+-Motor Control Circuit
+
+24V
+-Pnumatic Roller Supply
+-Reclamation Supply
+-Air pump
+-Wash Solenoid
+
+120VAC
+-In pump
+-Circulation pump
+-heater

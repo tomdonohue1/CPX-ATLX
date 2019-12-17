@@ -50,7 +50,5 @@ Dir - D6
 Pul - D5
 Limit - D3
 
-Air Relay - D2
-Wash Relay - D13
 
-MasterOK- A1
+MasterOK- 13

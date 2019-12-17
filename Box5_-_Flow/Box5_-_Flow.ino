@@ -6,18 +6,14 @@
 int inputVar = 0;
 
 //IO Declaration
-int washGo = 4;
-int airGo = 5;
 
 int washRelay = 7;
 int airRelay = 8;
 
 int flowIn = 10;
 
-
 //State Declarations
-int washGoState = 0;
-int airGoState = 0;
+
 int fluidVolume = 0;
 float fluidTime = 0; //seconds
 

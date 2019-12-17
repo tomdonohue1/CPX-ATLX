@@ -23,6 +23,8 @@ Fill Sensors
 
 120VAC:
 -In Pump
+-Circulation pump
+-Heater
 
 //Arduino I/O
 -inPump = 5;

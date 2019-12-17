@@ -11,11 +11,11 @@ char confirm = 'x';
 int fluidVolume = 0;
 bool processConfirm = false;
 //I/O Declaration
-int box1Ready = 11;
-int box2Ready = 12;
-int box3Ready = 13;
-int box4Ready = 14;
-int box5Ready = 15;
+int box1Ready = 4;
+int box2Ready = 5;
+int box3Ready = 6;
+int box4Ready = 7;
+int box5Ready = 8;
 
 //OUTPUT
 

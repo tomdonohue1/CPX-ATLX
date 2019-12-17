@@ -8,20 +8,20 @@ int dwVal = 0; //Read store int
 int upVal = 0;
 
 //I/O Declaration
-int upLimit = 4;
-int dwLimit = 5;
-int flowOut = 11;
+int upLimit = 5;
+int dwLimit = 6;
+int flowOut = 4;
 
 //Lift Motor Declaration
-int enA_L = 910;
-int in1_L = 3;
-int in2_L = 2;
+int enA_L = 7;
+int in1_L = 8;
+int in2_L = 9;
 int xSpeed = 128; //global max motor speed, 8bit
 
 //Spin Motor Delcaration
-int enA_S = 9;
-int in1_S = 3;
-int in2_S = 2;
+int enA_S = 10;
+int in1_S = 11;
+int in2_S = 12;
 int xSpeed_S = 255;
 
 
